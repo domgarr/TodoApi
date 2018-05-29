@@ -1,7 +1,8 @@
 require('./config');
+const _ = require('lodash');
 
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose');
@@ -50,6 +51,23 @@ app.get('/todos/:id', (req,res) => {
         res.status(200).send({todo});
     }).catch((e) => {
         res.status(400).send();
+    });
+});
+
+app.post('/users', (req, res) => {
+    const body = _.pick(req.body, ['email', 'password']);
+  
+    var user = new User(body);
+
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send(user.toJSON());
+    })
+    .catch((e) => {
+        res.status(400).send(e);
+        console.log('Error', e);
+        return;
     });
 });
 

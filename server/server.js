@@ -22,8 +22,6 @@ app.get('/', (req, res) => {
 })
 
 app.post('/todos',authenticate , (req,res) => {
-
-
     var todo = new Todo({
         text: req.body.text,
         _creator: req.user._id
@@ -37,13 +35,13 @@ app.post('/todos',authenticate , (req,res) => {
 
 });
 
-app.get('/todos',authenticate ,(req,res) => {
+app.get('/todos', authenticate, (req,res) => {
     Todo.find({ _creator: req.user._id })
     .then((todos) =>{
         res.send({todos});
     }, (e) => {
         res.status(400).send(e);
-    })
+    });
 });
 
 app.get('/todos/:id', (req,res) => {
@@ -81,8 +79,6 @@ app.post('/users', (req, res) => {
         return;
     });
 });
-
-
 
 app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user);

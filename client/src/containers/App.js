@@ -1,24 +1,50 @@
 import React, { Component } from 'react';
 import './App.css';
+
+import Axios from 'axios';
+
 import Insert from '../components/Todos/Todo/Insert';
 import Todos from '../components/Todos/Todos';
 import Header from '../components/Header/Header';
-import Axios from 'axios';
-
+import Login from '../components/Login/Login';
 
 
 class App extends Component {
+  constructor(props){
+    super(props);
+
+    //https://reactjs.org/docs/refs-and-the-dom.html
+    //Provides a way to acces React elements created in render method.
+  }
+  
   state = {
-    todos : [{id: 0 , action: "this is a todo"}, {id: 1, action: "check"}],
-    authorized: false,
+    todos : [],
+    authenticated: false,
+    user: {},
+    showModal : true
   }
 
+   
+
   componentDidMount(){
-    Axios.get('/login')
+    Axios.post('/users/login', {email: 'dom@gmal.com', password: 'okay12'} )
       .then((response) => {
         if(response != null){
           console.log(response.data);
+          this.setState({authenticated: false, user: response.data});
         } 
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+      Axios.get('/todos', { headers: {
+        //Get user tokens
+        //add e in front
+        'x-auth' : 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjBlZmVmZGNkM2E4ZTRjMTRkNmVhMjciLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTI3NzQyNTE5fQ.K1Bmno-JXIMtQSLB0i4LwMC7O3dOF5ELDYKwpQPCLOs'
+      }}).then((response) => {
+        console.log(response.data.todos);
+        this.setState( {todos: response.data.todos} );
       })
       .catch((error) => {
         console.log(error);
@@ -40,7 +66,7 @@ class App extends Component {
       e.persist();
       const action = e.target.value;
      
-      Axios.post('http://localhost:8080/domenic/todos',
+      Axios.post('http://localhost:3001/',
         {
           account: 'domenic',
           action: action
@@ -77,7 +103,7 @@ class App extends Component {
     //Use splice to remove the todo at given index
     todos.splice(index, 1);
 
-    Axios.delete('http://localhost:8080/domenic/todos', {params: {id: todoId + ""} } )
+    Axios.delete('http://localhost:/domenic/todos', {params: {id: todoId + ""} } )
       .then(response =>{
         if(response != null){
             console.log(response);
@@ -91,11 +117,40 @@ class App extends Component {
     this.setState( {todos: todos} );
   }
 
- 
+  logoutHandler = () => {
+
+  }
+
+  loginHandler = () => {
+    console.log("hello");
+    this.setState({showModal: true});
+
+    document.addEventListener('mousedown', this.handleClickOutsideModal);
+  }
+
+   handleClickOutsideModal(event) {
+
+  }
+  
+  unfocusModal = (event) =>{
+    const id = event.target.id;
+    switch(id){
+      case 'login-modal-backdrop': this.setState({showModal: false});
+        return;
+      case 'login-modal-exit': this.setState({showModal: false});
+        return;
+      default:
+        return; 
+    }    
+  }
 
   render() {
     let todos = null;
+    console.log(this.state.user);
 
+  //Conditionally render when User us authorized.
+  const isLoggedIn = this.state.authenticated ? <p className="text-center"> Welcome {this.state.user.email} <a href="#"> Log out </a> </p> : <p className="text-center"> <a href="#" onClick={this.loginHandler}> Log in </a> to save your todos! </p>;
+  
     todos = (
       <div>
        		<Todos  todos={this.state.todos} 
@@ -104,16 +159,16 @@ class App extends Component {
       </div>
       );
 
-    //Conditionally render when User us authorized.
-    const isLoggedIn = this.state.authorized ? <p> Logged In </p> : <p> <a href="/"> Log in </a> to save your todos! </p>;
       
 
     return (
-      <div className="App">
+      <div>
+        <Login isLogginIn = {this.state.showModal} unfocusModal={this.unfocusModal}/>
         <Header />
         <Insert handler={this.insertTodoHandler } />
-        {todos}
         {isLoggedIn}
+        {todos}
+        
       </div>
     );
   }

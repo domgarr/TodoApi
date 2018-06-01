@@ -7,6 +7,7 @@ import Insert from '../components/Todos/Todo/Insert';
 import Todos from '../components/Todos/Todos';
 import Header from '../components/Header/Header';
 import Login from '../components/Login/Login';
+import Modal from './Modal/Modal';
 
 
 class App extends Component {
@@ -15,13 +16,15 @@ class App extends Component {
 
     //https://reactjs.org/docs/refs-and-the-dom.html
     //Provides a way to acces React elements created in render method.
+    this.loginHandler = this.loginHandler.bind(this) // << important line
+
   }
   
   state = {
     todos : [],
     authenticated: false,
     user: {},
-    showModal : true
+    isLoggingIn : true
   }
 
    
@@ -122,31 +125,18 @@ class App extends Component {
   }
 
   loginHandler = () => {
-    console.log("hello");
-    this.setState({showModal: true});
+    
+    this.setState((prevState, props) => {
+      return {
+        isLoggingIn: true
+      };
+    });
 
-    document.addEventListener('mousedown', this.handleClickOutsideModal);
   }
 
-   handleClickOutsideModal(event) {
-
-  }
-  
-  unfocusModal = (event) =>{
-    const id = event.target.id;
-    switch(id){
-      case 'login-modal-backdrop': this.setState({showModal: false});
-        return;
-      case 'login-modal-exit': this.setState({showModal: false});
-        return;
-      default:
-        return; 
-    }    
-  }
 
   render() {
     let todos = null;
-    console.log(this.state.user);
 
   //Conditionally render when User us authorized.
   const isLoggedIn = this.state.authenticated ? <p className="text-center"> Welcome {this.state.user.email} <a href="#"> Log out </a> </p> : <p className="text-center"> <a href="#" onClick={this.loginHandler}> Log in </a> to save your todos! </p>;
@@ -158,12 +148,11 @@ class App extends Component {
           />
       </div>
       );
-
-      
+    
 
     return (
       <div>
-        <Login isLogginIn = {this.state.showModal} unfocusModal={this.unfocusModal}/>
+        <Login isFocused = {this.state.isLoggingIn}/>
         <Header />
         <Insert handler={this.insertTodoHandler } />
         {isLoggedIn}

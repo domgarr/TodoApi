@@ -7,7 +7,6 @@ import Insert from '../components/Todos/Todo/Insert';
 import Todos from '../components/Todos/Todos';
 import Header from '../components/Header/Header';
 import Login from '../components/Login/Login';
-import Modal from './Modal/Modal';
 
 
 class App extends Component {
@@ -24,10 +23,9 @@ class App extends Component {
     todos : [],
     authenticated: false,
     user: {},
-    isLoggingIn : true
+    isLoggingIn : true,
+    
   }
-
-   
 
   componentDidMount(){
     Axios.post('/users/login', {email: 'dom@gmal.com', password: 'okay12'} )
@@ -44,7 +42,7 @@ class App extends Component {
       Axios.get('/todos', { headers: {
         //Get user tokens
         //add e in front
-        'x-auth' : 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YjBlZmVmZGNkM2E4ZTRjMTRkNmVhMjciLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTI3NzQyNTE5fQ.K1Bmno-JXIMtQSLB0i4LwMC7O3dOF5ELDYKwpQPCLOs'
+        'x-auth' : this.getToken()
       }}).then((response) => {
         console.log(response.data.todos);
         this.setState( {todos: response.data.todos} );
@@ -54,7 +52,10 @@ class App extends Component {
       });
   }
 
-
+  getToken = () => {
+    // Retrieves the user token from localStorage
+    return localStorage.getItem('id_token')
+}
 
    insertTodoHandler = (e) => {
     //Only add new todos when enter is pressed
@@ -148,6 +149,9 @@ class App extends Component {
           />
       </div>
       );
+
+  
+
     
 
     return (

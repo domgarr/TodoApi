@@ -73,6 +73,7 @@ class Login extends Component{
         Axios.post('/users/login', formData)
         .then((res) => {
             this.setToken(res.headers['x-auth']);
+            window.location.reload();
         })
         .catch((err) => {
             console.log(err);

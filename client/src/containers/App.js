@@ -23,26 +23,19 @@ class App extends Component {
     todos : [],
     authenticated: false,
     user: {},
-    isLoggingIn : true,
-    
+    isLoggingIn : false,
   }
 
   componentDidMount(){
-    Axios.post('/users/login', {email: 'dom@gmal.com', password: 'okay12'} )
-      .then((response) => {
-        if(response != null){
-          console.log(response.data);
-          this.setState({authenticated: false, user: response.data});
-        } 
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let token = this.getToken();
+    if(token){
+      this.setState({authenticated: true});
+    }
 
       Axios.get('/todos', { headers: {
         //Get user tokens
         //add e in front
-        'x-auth' : this.getToken()
+        'x-auth' : token
       }}).then((response) => {
         console.log(response.data.todos);
         this.setState( {todos: response.data.todos} );
@@ -55,6 +48,13 @@ class App extends Component {
   getToken = () => {
     // Retrieves the user token from localStorage
     return localStorage.getItem('id_token')
+}
+
+logout = () => {
+  // Retrieves the user token from localStorage
+   localStorage.removeItem('id_token');
+   this.setState({authenticated: false, todos: []});
+  
 }
 
    insertTodoHandler = (e) => {
@@ -121,9 +121,6 @@ class App extends Component {
     this.setState( {todos: todos} );
   }
 
-  logoutHandler = () => {
-
-  }
 
   loginHandler = () => {
     
@@ -135,12 +132,11 @@ class App extends Component {
 
   }
 
-
   render() {
     let todos = null;
 
   //Conditionally render when User us authorized.
-  const isLoggedIn = this.state.authenticated ? <p className="text-center"> Welcome {this.state.user.email} <a href="#"> Log out </a> </p> : <p className="text-center"> <a href="#" onClick={this.loginHandler}> Log in </a> to save your todos! </p>;
+  const isLoggedIn = this.state.authenticated ? <p className="text-center"> Welcome {this.state.user.email} <a href="#" onClick={this.logout}> Log out </a> </p> : <p className="text-center"> <a href="#" onClick={this.loginHandler}> Log in </a> to save your todos! </p>;
   
     todos = (
       <div>
@@ -149,10 +145,6 @@ class App extends Component {
           />
       </div>
       );
-
-  
-
-    
 
     return (
       <div>

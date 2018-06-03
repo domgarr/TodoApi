@@ -13,7 +13,7 @@ var authenticate = (req, res, next) => {
        next();
     }).catch((e) => {
         //401 auth required
-        res.status(401).send();
+        res.status(401).send({text :"Couldnt find user with token"});
     });
 }
 

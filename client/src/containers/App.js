@@ -28,38 +28,46 @@ class App extends Component {
 
   componentDidMount(){
     let token = this.getToken();
-    if(token){
-      this.setState({authenticated: true});
+    if(token == null){
+      return;
     }
-
-      Axios.get('/todos', { headers: {
-        //Get user tokens
-        //add e in front
-        'x-auth' : token
+    
+    this.setState({authenticated: true});
+  
+    Axios.get('/todos', { headers: {
+      //Get user tokens
+      'x-auth' : token
       }}).then((response) => {
-        console.log(response.data.todos);
         this.setState( {todos: response.data.todos} );
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+    }
+  
+getToken = () => {
+  // Retrieves the user token from localStorage
+  return localStorage.getItem('_token');
+}
 
-  getToken = () => {
-    // Retrieves the user token from localStorage
-    return localStorage.getItem('id_token')
+getID = () => {
+  return localStorage.getItem('_id');
 }
 
 logout = () => {
   // Retrieves the user token from localStorage
-   localStorage.removeItem('id_token');
+   localStorage.removeItem('_token');
    this.setState({authenticated: false, todos: []});
+
+   //Upon logging out a call to /user/me/token needs to be called
+   //to remove existing token in db.
   
 }
 
    insertTodoHandler = (e) => {
     //Only add new todos when enter is pressed
     if(e.key === "Enter"){
+      var textbox = e.target;
       /* 
         In React events are wrapped by a SyntheticEvent. SE's are pooled
         meaning they are being constantly reused after the event callback
@@ -68,29 +76,35 @@ logout = () => {
         and allows event to be referenced by user .
       */
       e.persist();
-      const action = e.target.value;
-     
-      Axios.post('http://localhost:3001/',
-        {
-          account: 'domenic',
-          action: action
-        })
-        .then(response => {
-          //Location has ID of newly created Todo
-            const location = response.headers.location;
-            if(location != null){
-              const tokens = location.split('/');
-              const id = tokens[tokens.length-1];
+      
+      const text = textbox.value.trim();
+      
+      if(text.length == 0){
+        return;
+      }
 
+     /* Careful adding data and header information in the same object
+        the header information doesn't actually get passed in the header
+        but as a header object int the body.
+        Althought if all your sending is a header, like done up above, you can
+        place the header just after the endpoint.
+     */
+      Axios.post('/todos',
+        { 
+          'text': text,
+          '_creator': this.getID()
+        }, {headers: {
+          'x-auth' : this.getToken()
+        }})
+        .then(response => {
+              const id = response.data._id;
               //Get copy of array
               let todos = [...this.state.todos];
               //Add new Todo to the array
-              todos.push({id: id, action: action});
+              todos.push({id: id, text: text});
               //Clear text from texbox
-              e.target.value = "";
-              //Update state
+              textbox.value = "";
               this.setState( {todos: todos} );
-          }
         })
         .catch(error => {
           console.log(error);

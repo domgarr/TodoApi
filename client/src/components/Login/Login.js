@@ -73,6 +73,7 @@ class Login extends Component{
         Axios.post('/users/login', formData)
         .then((res) => {
             this.setToken(res.headers['x-auth']);
+            this.setID(res.data._id);
             window.location.reload();
         })
         .catch((err) => {
@@ -82,9 +83,13 @@ class Login extends Component{
 
     //Storing of token
     //https://hptechblogs.com/using-json-web-token-react/
-    setToken = (idToken) => {
+    setToken = (_token) => {
         // Saves user token to localStorage
-        localStorage.setItem('id_token', idToken)
+        localStorage.setItem('_token', _token);
+    }
+
+    setID = (_id) => {
+        localStorage.setItem('_id', _id);
     }
 
     render(){

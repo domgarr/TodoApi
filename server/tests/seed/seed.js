@@ -9,7 +9,7 @@ const userTwoId = new ObjectID();
 
 const users = [{
     _id: userOneId,
-    email: 'garreffd@uwindsor.ca',
+    email: 'garreff@uwindsor.ca',
     password: 'userOnePass',
     tokens : [{ 
         access: 'auth',
@@ -19,7 +19,7 @@ const users = [{
 },
 {
     _id: userTwoId,
-    email: "wowomg123@email.com",
+    email: "wowomg12@email.com",
     password: 'userTwoPass'
 }];
 

@@ -38,6 +38,7 @@ class App extends Component {
       //Get user tokens
       'x-auth' : token
       }}).then((response) => {
+        console.log(response.data.todos);
         this.setState( {todos: response.data.todos} );
       })
       .catch((error) => {
@@ -116,19 +117,23 @@ logout = () => {
     //Get copy of Todos
     let todos = [...this.state.todos];
     //Get id of Todo before removing from array.
-    const todoId = todos[index].id;
+    const todoId = todos[index]._id;
   
     //Use splice to remove the todo at given index
     todos.splice(index, 1);
 
-    Axios.delete('http://localhost:/domenic/todos', {params: {id: todoId + ""} } )
+    Axios.delete('/todos/' + todoId,
+     {headers : {
+      'x-auth' : this.getToken()
+        }
+    })
       .then(response =>{
         if(response != null){
             console.log(response);
         }
       })
       .catch( error => {
-        console.log(error);
+        console.log(error.response);
       });
 
     //Update state

@@ -12,10 +12,8 @@ class Modal extends Component {
     }
   
     unfocusModal = (event) =>{
-    
         const id = event.target.id;
-    
-        console.log(id);
+        
         switch(id){
         case 'modal-backdrop': this.setState({isFocused: false});
             return;

@@ -137,28 +137,34 @@ describe('POST /todos', () =>{
                 })
                 .end(done);
         });
-
-        it('should return validation error if request invalid', (done) => {
-
-        });
-
-        it('should not create user if email is in use', (done) => {
-
-        });
     });
 
     describe('POST /users/login', () => {
-        if('should login an existing user', (done) => {
-            const email = 'garreffd@uwindsor.ca';
-            const password = 'hello123';
+        it('should login an existing user', (done) => {
+            const email = users[0].email;
+            const password = users[0].password;
 
             request(app)
                 .post('/users/login')
-                .send({email, password})
+                .send({email: email, password: password})
                 .expect(200)
                 .expect((res) => {
                     expect(res.headers['x-auth']).toExist();
                     expect(res.body.email).toBe(email);
+                })
+                .end(done);
+        });
+    });
+
+    describe('DELETE /todos/id', () => {
+        it('should delete a single todo', (done) => {
+            request(app)
+                .delete('/todos/' + id)
+                .set('x-auth', users[0].tokens[0].token)
+                .send()
+                .expect(200)
+                .expect((res) => {
+                    
                 })
                 .end(done);
         });

@@ -6,7 +6,7 @@ const todos = (props) => (
 		 props.todos.map( (todo, index) => {
             return  <	Todo key = {todo._id}
                         	 action = {todo.text}
-                        	 click = {() => props.handler(index)} 
+                        	 click = {() => props.handler(index, todo._id)} 
                     />
         })	
 	);

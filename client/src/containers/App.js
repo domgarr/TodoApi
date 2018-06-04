@@ -101,8 +101,9 @@ logout = () => {
               const id = response.data._id;
               //Get copy of array
               let todos = [...this.state.todos];
+              console.log(id);
               //Add new Todo to the array
-              todos.push({id: id, text: text});
+              todos.push({_id: id, text: text});
               //Clear text from texbox
               textbox.value = "";
               this.setState( {todos: todos} );
@@ -113,16 +114,15 @@ logout = () => {
     }
   }
 
-  deleteTodoHandler = (index) => {
+  deleteTodoHandler = (index, id) => {
+    console.log(id);
     //Get copy of Todos
     let todos = [...this.state.todos];
-    //Get id of Todo before removing from array.
-    const todoId = todos[index]._id;
-  
+   
     //Use splice to remove the todo at given index
     todos.splice(index, 1);
 
-    Axios.delete('/todos/' + todoId,
+    Axios.delete('/todos/' + id,
      {headers : {
       'x-auth' : this.getToken()
         }

@@ -10,6 +10,9 @@ const input = (props) =>{
             inputElement = <input {...props.elementConfig}
                 onChange={props.changed}
             />
+            break;
+        default: console.log('Error: input element does not exist');
+            return;
     }
 
     return (

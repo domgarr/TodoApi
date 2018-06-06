@@ -67,8 +67,6 @@ class Login extends Component{
             email: this.state.loginForm.email.value, 
             password: this.state.loginForm.password.value
         };
-
-        console.log(formData);
        
         Axios.post('/users/login', formData)
         .then((res) => {

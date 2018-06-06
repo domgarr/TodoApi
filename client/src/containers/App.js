@@ -38,7 +38,6 @@ class App extends Component {
       //Get user tokens
       'x-auth' : token
       }}).then((response) => {
-        console.log(response.data.todos);
         this.setState( {todos: response.data.todos} );
       })
       .catch((error) => {
@@ -80,7 +79,7 @@ logout = () => {
       
       const text = textbox.value.trim();
       
-      if(text.length == 0){
+      if(text.length === 0){
         return;
       }
 
@@ -101,7 +100,6 @@ logout = () => {
               const id = response.data._id;
               //Get copy of array
               let todos = [...this.state.todos];
-              console.log(id);
               //Add new Todo to the array
               todos.push({_id: id, text: text});
               //Clear text from texbox
@@ -115,7 +113,6 @@ logout = () => {
   }
 
   deleteTodoHandler = (index, id) => {
-    console.log(id);
     //Get copy of Todos
     let todos = [...this.state.todos];
    
@@ -129,7 +126,7 @@ logout = () => {
     })
       .then(response =>{
         if(response != null){
-            console.log(response);
+            //Possibly return ID deleted?
         }
       })
       .catch( error => {
@@ -155,7 +152,7 @@ logout = () => {
     let todos = null;
 
   //Conditionally render when User us authorized.
-  const isLoggedIn = this.state.authenticated ? <p className="text-center"> Welcome {this.state.user.email} <a href="#" onClick={this.logout}> Log out </a> </p> : <p className="text-center"> <a href="#" onClick={this.loginHandler}> Log in </a> to save your todos! </p>;
+  const isLoggedIn = this.state.authenticated ? <p className="text-center"> Welcome {this.state.user.email} <a href="#"  role="button" onClick={this.logout}> Log out </a> </p> : <p className="text-center"> <a href="#" onClick={this.loginHandler}> Log in </a> to save your todos! </p>;
   
     todos = (
       <div>

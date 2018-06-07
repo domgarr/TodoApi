@@ -7,6 +7,8 @@ import Insert from '../components/Todos/Todo/Insert';
 import Todos from '../components/Todos/Todos';
 import Header from '../components/Header/Header';
 import Login from '../components/Login/Login';
+import SignUp from '../components/SignUp/SignUp';
+
 
 
 class App extends Component {
@@ -23,6 +25,7 @@ class App extends Component {
     todos : [],
     authenticated: false,
     user: {},
+    isSigningIn: false,
     isLoggingIn : false,
   }
 
@@ -142,10 +145,14 @@ logout = () => {
     
     this.setState((prevState, props) => {
       return {
-        isLoggingIn: true
+        isLoggingIn: true, 
+        isSigningIn: false
       };
     });
+  }
 
+  signUpHandler = () =>{
+    this.setState({isSigningIn: true, isLoggingIn: false});
   }
 
   render() {
@@ -164,9 +171,10 @@ logout = () => {
 
     return (
       <div>
-        <Login isFocused = {this.state.isLoggingIn}/>
+        <SignUp isFocused = {this.state.isSigningIn} loginHandler = {this.loginHandler} />
+        <Login isFocused = {this.state.isLoggingIn} signUpHandler = {this.signUpHandler}/>
         <Header />
-        <Insert handler={this.insertTodoHandler } />
+        <Insert handler={this.insertTodoHandler }  />
         {isLoggedIn}
         {todos}
         

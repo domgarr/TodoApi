@@ -121,7 +121,7 @@ class Login extends Component{
                     {form}
                     <button className="btn btn-block  btn-primary " type="submit">Sign in</button>
                 </form>
-                <p className="margin-10"> Don't have an account? <a href="" > sign up </a> </p>
+                <p className="margin-10"> Don't have an account? <a href="#" onClick={this.props.signUpHandler} > Sign up </a> </p>
             </Modal>
         );
     

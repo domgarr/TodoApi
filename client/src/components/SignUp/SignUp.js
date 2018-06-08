@@ -5,6 +5,7 @@ import Axios from 'axios';
 
 
 class SignUp extends Component {
+
     state = {
         signUpForm : {
             email: {
@@ -18,9 +19,11 @@ class SignUp extends Component {
                 },
                 value: '',
                 validation: {
-                  required: true
+                  required: true,
+                  errorMessage : ""
                 },
                 valid: false
+                
                 
               },
               password :{
@@ -31,17 +34,55 @@ class SignUp extends Component {
                    placeholder: "Password",
                    required: 'required'
                 },
-                value: ''
-              }
+                value: '',
+                validation : {
+                    required: true,
+                    minLength : 7,
+                    errorMessage : ""
+                   
+                }, 
+                valid: false
+              }  
         }
     }
+
+    checkValidity(value, rules, key){
+        let isValid = true;
+        let errorMessage ="";
+        let signUpFormCopy = {...this.state.signUpForm};
+        let validationCopy = signUpFormCopy[key].validation;
+        
+
+        if(rules.required){
+          isValid = value.trim() !== '';
+          if(!isValid){
+            errorMessage = errorMessage.concat( key[0].toUpperCase() + key.substring(1, key.length) + " can not be empty\n");
+          }
+        }
+        if(rules.minLength){
+          isValid = value.length >= rules.minLength;
+          if(!isValid){
+            errorMessage = errorMessage.concat( "Password length must be greater than 7\n");
+          }
+        }
+        
+        console.log(errorMessage);
+        validationCopy.errorMessage = errorMessage;
+        signUpFormCopy[key] = validationCopy;
+        signUpFormCopy[key].valid = isValid;
+        this.setState({ signUpForm: signUpFormCopy});
+        
+        return isValid;
+      }
 
     inputChangedHandler = (event, id) => {
         const updatedForm = {...this.state.signUpForm};
         //Spread operator only goes one level deep.
         const updatedFormElement = {...updatedForm[id]};
         updatedFormElement.value = event.target.value;
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation, id)
         updatedForm[id] = updatedFormElement;
+        
         this.setState({signUpForm: updatedForm});
     }
 
@@ -61,8 +102,10 @@ class SignUp extends Component {
     }
 
     render(){
+     
         const signUpFormElementsArray = [];
-
+        let errorMessage = "";
+        
         //Does the information about the form need to be in state?
 
         for(let key in this.state.signUpForm){
@@ -70,18 +113,36 @@ class SignUp extends Component {
                 id: key,
                 config: this.state.signUpForm[key]
             });
+
+            if(this.state.signUpForm[key].validation.errorMessage !== ''){
+                errorMessage = errorMessage.concat( this.state.signUpForm[key].validation.errorMessage );
+            }
+        }
+
+        let errorStyle = {
+            'white-space': 'pre'
+        };
+        
+        let error;
+        if(errorMessage !== ''){
+            error = (
+                <div style={errorStyle} className="alert alert-danger" role="alert">
+                    {errorMessage}
+                </div>
+            );
         }
 
         let form = (
             <div>
-            {signUpFormElementsArray.map(formElement => (
-                <Input 
-                    key={formElement.id}
-                    elementType = {formElement.config.elementType}
-                    elementConfig = {formElement.config.elementConfig}
-                    changed = {(event) => this.inputChangedHandler(event, formElement.id)}
-                />
-            ))}
+                {signUpFormElementsArray.map(formElement => (
+                    <Input 
+                        key={formElement.id}
+                        elementType = {formElement.config.elementType}
+                        elementConfig = {formElement.config.elementConfig}
+                        changed = {(event) => this.inputChangedHandler(event, formElement.id)}
+                    />      
+                ))}
+                {error}
             </div>
         );
 

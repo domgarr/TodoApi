@@ -34,7 +34,12 @@ class Login extends Component{
                  placeholder: "Password",
                  required: 'required'
               },
-              value: ''
+              value: '',
+              validation : {
+                  required: true,
+                  minLength: 7
+              }, 
+              valid: false
             }
           }
     }
@@ -43,11 +48,15 @@ class Login extends Component{
         
 
     checkValidity(value, rules){
-        let isValid;
+        let isValid = true;
         if(rules.required){
           isValid = value.trim() !== '';
-          return false;
         }
+        if(rules.minLength){
+          isValid = value.length >= rules.minLength;
+        }
+
+        return isValid;
       }
 
       inputChangedHandler = (event, id) => {
@@ -56,6 +65,7 @@ class Login extends Component{
         //id is essentially email, password, etc
         const updatedFormElement = {...updatedForm[id]};
         updatedFormElement.value = event.target.value;
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
         updatedForm[id] = updatedFormElement;
 
         this.setState({loginForm: updatedForm});

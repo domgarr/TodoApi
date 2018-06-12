@@ -43,10 +43,8 @@ class Login extends Component{
             }
           }
     }
-    //<input type="email" id='inputEmail' className="form-control margin-10" placeholder="garreffd@uwindsor.ca" required autoFocus />
-    //<input type="password" id="inputPassword" className="form-control margin-10" placeholder="Password" required />
-        
 
+    
     checkValidity(value, rules){
         let isValid = true;
         if(rules.required){

@@ -1,38 +1,29 @@
 import React, {Component} from 'react';
 import './Modal.css';
 
-class Modal extends Component {
-    constructor(props){
-        super(props);
-        this.state = { isFocused: props.isFocused };
-    }
-
-    componentWillReceiveProps(nextProps){
-        this.setState({isFocused: nextProps.isFocused});
-    }
-  
-    unfocusModal = (event) =>{
+ const modal = (props) => {
+    this.unfocusModal = (event) =>{
         const id = event.target.id;
         
         switch(id){
-        case 'modal-backdrop': this.setState({isFocused: false});
+        case 'modal-backdrop': props.exitHandler();
             return;
-        case 'modal-exit': this.setState({isFocused: false});
+        case 'modal-exit': props.exitHandler();
             return;
         default:
             return; 
         }    
     } 
 
-    render() {
+    
         let modal;
         
-        if(this.state.isFocused){
+        if(props.isFocused){
             modal = (
             <div id="modal-backdrop" className="modal-backdrop" onClick={this.unfocusModal}>
                 <div id="modal-content" className = "modal-content" >
                     <div id="modal-exit" className="modal-exit">&times;</div>
-                    {this.props.children}
+                    {props.children}
                 </div>
             </div>
             );
@@ -44,6 +35,6 @@ class Modal extends Component {
             </div>
         );
     }
-}
 
-export default Modal;
+
+export default modal;

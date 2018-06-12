@@ -27,6 +27,7 @@ class App extends Component {
     user: {},
     isSigningIn: false,
     isLoggingIn : false,
+    signInModalReset : true
   }
 
   componentDidMount(){
@@ -155,7 +156,13 @@ logout = () => {
     this.setState({isSigningIn: true, isLoggingIn: false});
   }
 
+  exitModalHandler = () => {
+    this.setState({isSigningIn: false, isLoggingIn: false});
+    console.log("CHECK");
+  }
+
   render() {
+    console.log(this.state.isLoggingIn);
     let todos = null;
 
   //Conditionally render when User us authorized.
@@ -171,8 +178,8 @@ logout = () => {
 
     return (
       <div>
-        <SignUp isFocused = {this.state.isSigningIn} loginHandler = {this.loginHandler} />
-        <Login isFocused = {this.state.isLoggingIn} signUpHandler = {this.signUpHandler}/>
+        <SignUp isFocused = {this.state.isSigningIn} loginHandler = {this.loginHandler}  exitHandler = {() => this.exitModalHandler()} />
+        <Login isFocused = {this.state.isLoggingIn} signUpHandler = {this.signUpHandler} />
         <Header />
         <Insert handler={this.insertTodoHandler }  />
         {isLoggedIn}

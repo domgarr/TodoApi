@@ -40,16 +40,29 @@ class SignUp extends Component {
                     minLength : 7,
                     errorMessage : ""
                    
-                }, 
-                valid: false
+                }
               }  
+        },
+        isFocused : false
+    }
+
+    clearErrorMessage = () => {
+        let signUpForm = this.state.signUpForm;
+        for(let key in signUpForm){
+           let formElement = signUpForm[key];
+           formElement.validation.errorMessage="";
+           signUpForm[key] = formElement;
         }
+    
+        this.setState({signUpForm: signUpForm});
+        this.props.exitHandler();
+
     }
 
     checkValidity(value, rules, key){
         let isValid = true;
         let errorMessage ="";
-        let signUpFormCopy = {...this.state.signUpForm};
+        let signUpFormCopy = {...this.state.signUpForm};  
         let validationCopy = signUpFormCopy[key].validation;
         
 
@@ -66,7 +79,6 @@ class SignUp extends Component {
           }
         }
         
-        console.log(errorMessage);
         validationCopy.errorMessage = errorMessage;
         signUpFormCopy[key] = validationCopy;
         signUpFormCopy[key].valid = isValid;
@@ -84,6 +96,7 @@ class SignUp extends Component {
         updatedForm[id] = updatedFormElement;
         
         this.setState({signUpForm: updatedForm});
+       
     }
 
     signUpHandler = () => {
@@ -102,7 +115,6 @@ class SignUp extends Component {
     }
 
     render(){
-     
         const signUpFormElementsArray = [];
         let errorMessage = "";
         
@@ -119,6 +131,7 @@ class SignUp extends Component {
             }
         }
 
+        //Allows for '\n' in a div to work as it would in the console.
         let errorStyle = {
             'white-space': 'pre'
         };
@@ -147,7 +160,7 @@ class SignUp extends Component {
         );
 
         let signUpModal = (
-            <Modal isFocused={this.props.isFocused}>
+            <Modal isFocused={this.props.isFocused} exitHandler = {this.clearErrorMessage}>
                 <h1 className = "h3 mb-3 font-weight-normal"> Sign up to save your todo list </h1>
                 <form onSubmit={this.signUpHandler}>
                     {form}

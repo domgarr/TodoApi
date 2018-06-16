@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './Modal.css';
 
  const modal = (props) => {
-    this.unfocusModal = (event) =>{
+    const unfocusModal = (event) =>{
         const id = event.target.id;
         
         switch(id){
@@ -17,10 +17,10 @@ import './Modal.css';
 
     
         let modal;
-        
+        console.log("IN MODAL: ", props.isFocused);
         if(props.isFocused){
             modal = (
-            <div id="modal-backdrop" className="modal-backdrop" onClick={this.unfocusModal}>
+            <div id="modal-backdrop" className="modal-backdrop" onClick={unfocusModal}>
                 <div id="modal-content" className = "modal-content" >
                     <div id="modal-exit" className="modal-exit">&times;</div>
                     {props.children}

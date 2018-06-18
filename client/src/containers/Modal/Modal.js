@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './Modal.css';
 
  const modal = (props) => {
-    const unfocusModal = (event) =>{
+    const unfocusModal = (event) => {
         const id = event.target.id;
         
         switch(id){
@@ -17,7 +17,6 @@ import './Modal.css';
 
     
         let modal;
-        console.log("IN MODAL: ", props.isFocused);
         if(props.isFocused){
             modal = (
             <div id="modal-backdrop" className="modal-backdrop" onClick={unfocusModal}>

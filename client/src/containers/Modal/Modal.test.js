@@ -17,7 +17,6 @@ describe('<Modal />', () => {
 
     it('should not render when isFocused is passed as false', () => {        
         const wrapper = shallow(<Modal isFocused={false} />);
-   
         expect(wrapper.prop('children')).toBeUndefined();
     });
 

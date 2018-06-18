@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 
 app.get('/', (req, res) => {
-    res.sendFile('./../client/index.html');
+    res.sendFile('./../client/public/index.html');
 })
 
 app.post('/todos',authenticate , (req,res) => {
